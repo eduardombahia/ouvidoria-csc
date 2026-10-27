@@ -2116,9 +2116,9 @@
   </button>
   <nav class="tab-nav-vertical">
     <button class="tab-btn active" data-tab="painel"><span class="tab-icon">📊</span><span class="tab-label">Painel OS</span></button>
-    <button class="tab-btn" data-tab="painel-sr"><span class="tab-icon">📋</span><span class="tab-label">Painel SR</span></button>
     <button class="tab-btn" data-tab="ordens"><span class="tab-icon">🗂️</span><span class="tab-label">Ordens de Serviço</span></button>
     <button class="tab-btn" data-tab="duplicadas"><span class="tab-icon">🧬</span><span class="tab-label">Duplicadas</span></button>
+    <button class="tab-btn" data-tab="painel-sr"><span class="tab-icon">📋</span><span class="tab-label">Painel SR</span></button>
     <button class="tab-btn" data-tab="solicitacoes"><span class="tab-icon">🛠️</span><span class="tab-label">Solicitações de Reparo</span></button>
     <button class="tab-btn" data-tab="gns"><span class="tab-icon">🚧</span><span class="tab-label">GNS</span></button>
     <button class="tab-btn" data-tab="hodometro"><span class="tab-icon">🛣️</span><span class="tab-label">Hodômetro</span></button>
@@ -2221,7 +2221,7 @@
     <input type="text" id="sr-veiculo" list="dl-veiculo" placeholder="Veículo: todos" autocomplete="off">
   </section>
 
-  <section class="kpis" id="sr-kpis"></section>
+  <section class="kpis" id="sr-kpis" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr));"></section>
 
   <section class="charts">
     <div class="card">
@@ -2568,7 +2568,6 @@
     </div>
   </div>
 
-  <div class="kpis" id="sol-kpis" style="margin-bottom:16px;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));"></div>
 
   <!-- ── Listagem ── -->
   <div class="slim-toolbar">
@@ -5927,7 +5926,9 @@ function srKpis(){
   const naoAtendida = rows.filter(r => r.situacao === 'Não atendida').length;
   const improcedente = rows.filter(r => r.situacao === 'Improcedente').length;
   const taxa = total ? Math.round((atendida/total)*100) : 0;
-  return { total, hoje, veiculos, atendida, naoAtendida, improcedente, taxa };
+  const cntRet = e => rows.filter(r => solRetornoEstado(r) === e).length;
+  return { total, hoje, veiculos, atendida, naoAtendida, improcedente, taxa,
+    ret1: cntRet('analise_pendente'), retFinal: cntRet('final_pendente'), aguardPcm: cntRet('aguardando_pcm') };
 }
 
 function renderSrKpis(){
@@ -5940,9 +5941,12 @@ function renderSrKpis(){
     {n:k.naoAtendida, l:'Não atendidas', cls:'naoatendida'},
     {n:k.improcedente, l:'Improcedentes', cls:'improcedente'},
     {n:k.taxa+'%', l:'Taxa de atendimento', cls:'taxa'},
+    {n:k.ret1, l:'1º retorno pendente', cls:'', accent:'var(--amber)'},
+    {n:k.retFinal, l:'Retorno final pendente', cls:'', accent:'var(--brand)'},
+    {n:k.aguardPcm, l:'Aguardando PCM', cls:'', accent:'var(--dim)'},
   ];
   document.getElementById('sr-kpis').innerHTML = kpis.map(x=>`
-    <div class="kpi ${x.cls}">
+    <div class="kpi ${x.cls}"${x.accent?` style="--accent:${x.accent}"`:''}>
       <div class="n">${x.n}</div>
       <div class="l">${x.l}</div>
     </div>`).join('');
@@ -7049,12 +7053,12 @@ if(window.MODO_OUVIDORIA){
   if(backupBar) backupBar.style.display = 'none';          // backup de OS não é da Ouvidoria
   const loginTitulo = document.querySelector('#pcm-login-card-normal h1');
   if(loginTitulo) loginTitulo.innerHTML = 'Ouvidoria <span style="color:var(--brand);">Frota</span>';
-  // Menu: Solicitações de Reparo primeiro (é a que abre), depois Painel SR; o resto fica oculto
+  // Menu: Painel SR acima de Solicitações de Reparo (Solicitações é a que abre); o resto fica oculto
   const nav = document.querySelector('.tab-nav-vertical');
   const btnSR  = document.querySelector('.tab-btn[data-tab="painel-sr"]');
   const btnSol = document.querySelector('.tab-btn[data-tab="solicitacoes"]');
-  if(nav && btnSR)  nav.prepend(btnSR);
   if(nav && btnSol) nav.prepend(btnSol);
+  if(nav && btnSR)  nav.prepend(btnSR);
   document.querySelectorAll('.tab-btn[data-tab]').forEach(b => {
     if(!OUVIDORIA_ABAS.includes(b.dataset.tab)) b.style.display = 'none';
   });
@@ -8941,24 +8945,6 @@ function solNextNum(){
   return 'SR-' + String(max + 1).padStart(3, '0');
 }
 
-// ── KPIs ─────────────────────────────────────────────────
-function renderSolKpis(){
-  const total = solRecords.length;
-  const hoje  = new Date().toISOString().slice(0,10);
-  const hojeN = solRecords.filter(r => r.data === hoje).length;
-  const veiculosUnicos = new Set(solRecords.map(r => r.veiculo).filter(Boolean)).size;
-  const cntRet = e => solRecords.filter(r => solRetornoEstado(r) === e).length;
-
-  document.getElementById('sol-kpis').innerHTML = `
-    <div class="kpi veic"><div class="n">${total}</div><div class="l">Total de Solicitações</div></div>
-    <div class="kpi" style="--accent:var(--brand-2)"><div class="n">${hojeN}</div><div class="l">Hoje</div></div>
-    <div class="kpi" style="--accent:var(--green)"><div class="n">${veiculosUnicos}</div><div class="l">Veículos distintos</div></div>
-    <div class="kpi" style="--accent:var(--amber)"><div class="n">${cntRet('analise_pendente')}</div><div class="l">1º retorno pendente</div></div>
-    <div class="kpi" style="--accent:var(--brand)"><div class="n">${cntRet('final_pendente')}</div><div class="l">Retorno final pendente</div></div>
-    <div class="kpi" style="--accent:var(--dim)"><div class="n">${cntRet('aguardando_pcm')}</div><div class="l">Aguardando PCM</div></div>
-  `;
-}
-
 // ── Auto-preenchimento de Operação a partir do Veículo ────
 function updateSolOperacao(){
   const veiculo = document.getElementById('sol-veiculo').value.trim();
@@ -8973,8 +8959,6 @@ let solPageAtual     = 1;
 let solRowsAtuais    = []; // resultado filtrado+ordenado, antes de paginar
 
 function solApplyFilters(){
-  renderSolKpis();
-
   const search   = (document.getElementById('sol-search')?.value||'').toLowerCase();
   const situacao = (document.getElementById('sol-filter-situacao')?.value||'');
   const empFilter = (document.getElementById('sol-filter-empresa')?.value||'');

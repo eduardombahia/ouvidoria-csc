@@ -1037,6 +1037,15 @@
   .log-tag.hodo        {background:rgba(var(--brand-2-rgb),.12);color:var(--brand-2);border:1px solid rgba(var(--brand-2-rgb),.3);}
   .log-tag.backup      {background:rgba(255,255,255,.06);color:var(--dim);border:1px solid var(--line);}
   .log-tag.sistema     {background:rgba(255,255,255,.06);color:var(--dim);border:1px solid var(--line);}
+  .log-tag.acesso      {background:rgba(60,190,200,.12);color:#3cbec8;border:1px solid rgba(60,190,200,.3);}
+  .log-tag.admin       {background:rgba(240,170,40,.12);color:var(--amber);border:1px solid rgba(240,170,40,.3);}
+  .log-tag.os-fechamento{background:rgba(var(--green-rgb),.15);color:var(--green);border:1px solid rgba(var(--green-rgb),.3);}
+  .log-tag.os-merge, .log-tag.classificacao-massa, .log-tag.recalculo{background:rgba(var(--brand-2-rgb),.12);color:var(--brand-2);border:1px solid rgba(var(--brand-2-rgb),.3);}
+  .log-tag.frota-import, .log-tag.vinculo-frota{background:rgba(180,130,255,.12);color:#b482ff;border:1px solid rgba(180,130,255,.3);}
+  .log-user{font-size:12.5px;white-space:nowrap;}
+  .log-user small{display:block;color:var(--dim);font-size:11px;}
+  .log-more{display:block;margin:14px auto;}
+  .log-toolbar input[type=date]{min-width:0;}
   .log-detail{color:var(--chalk);font-size:12px;line-height:1.5;}
   .log-detail .sub{color:var(--dim);font-size:11px;}
   .log-count{font-family:var(--font-mono);font-size:11px;color:var(--dim);}
@@ -2023,7 +2032,7 @@
   #pcm-admin-modal{ max-height:88vh; overflow-y:auto; }
 </style>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
-  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='6' fill='%231a1a1a'/%3E%3Ctext x='16' y='23' font-size='20' text-anchor='middle' font-family='sans-serif'%3E%F0%9F%94%A7%3C/text%3E%3C/svg%3E">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 32 32'%3E%3Crect width='32' height='32' rx='7' fill='%231a1a1a'/%3E%3Cpath d='M6 5h20a2.5 2.5 0 0 1 2.5 2.5v12A2.5 2.5 0 0 1 26 22h-9.5l-5.5 5v-5H6a2.5 2.5 0 0 1-2.5-2.5v-12A2.5 2.5 0 0 1 6 5z' fill='%23FF6A2B'/%3E%3Cpath d='M7 9.5h18a1.5 1.5 0 0 1 1.5 1.5v5.5h-21V11A1.5 1.5 0 0 1 7 9.5z' fill='%231a1a1a'/%3E%3Cg fill='%23FF6A2B'%3E%3Crect x='8' y='11' width='3.2' height='3'/%3E%3Crect x='12.6' y='11' width='3.2' height='3'/%3E%3Crect x='17.2' y='11' width='3.2' height='3'/%3E%3Crect x='21.8' y='11' width='3.2' height='3'/%3E%3C/g%3E%3Ccircle cx='11' cy='17' r='1.6' fill='%23FF6A2B' stroke='%231a1a1a' stroke-width='1.2'/%3E%3Ccircle cx='21' cy='17' r='1.6' fill='%23FF6A2B' stroke='%231a1a1a' stroke-width='1.2'/%3E%3C/svg%3E">
 </head>
 <body>
 
@@ -2093,7 +2102,7 @@
 
 <header>
   <p class="eyebrow">Planejamento e Controle de Manutenção · Grupo CSC</p>
-  <h1>Registro de <span>Ordens de Serviço</span> <span class="version-badge" id="version-badge">v1.2</span><span class="update-banner" id="update-banner" title="Clique para atualizar a página"><span class="dot-pulse"></span>Nova versão disponível — atualizar</span></h1>
+  <h1>Registro de <span>Ordens de Serviço</span> <span class="version-badge" id="version-badge">v1.0</span><span class="update-banner" id="update-banner" title="Clique para atualizar a página"><span class="dot-pulse"></span>Nova versão disponível — atualizar</span></h1>
   <p class="sub">Painel da aba <strong>Controle</strong> — corretivas e preventivas lançadas na frota Urbano e Comigo, com reincidências sinalizadas por chave de erro. Período: <span id="periodo"></span>.</p>
 </header>
 
@@ -2921,23 +2930,16 @@
 <!-- ═══════════════ LOG TAB ═══════════════ -->
 <div id="tab-log" class="tab-panel">
   <p class="sub" style="margin-top:0;margin-bottom:16px;">Histórico de todas as ações realizadas no sistema — novas OS, edições, exclusões, importações, alterações de frota, hodômetro e configurações. Use a busca e o filtro por categoria para investigar uma alteração específica, ou exporte o log completo em CSV.</p>
-  <div class="log-toolbar">
-    <input type="text" id="log-search" placeholder="Buscar no log…">
-    <select id="log-filter-cat">
-      <option value="">Categoria: todas</option>
-      <option value="os-nova">Nova OS</option>
-      <option value="os-edit">Edição OS</option>
-      <option value="os-delete">Exclusão OS</option>
-      <option value="os-import">Importação OS</option>
-      <option value="sr-import">Importação SR</option>
-      <option value="frota">Frota</option>
-      <option value="hodo">Hodômetro</option>
-      <option value="backup">Backup</option>
-      <option value="sistema">Sistema</option>
-    </select>
+  <div class="log-toolbar" style="flex-wrap:wrap;">
+    <input type="text" id="log-search" placeholder="Buscar no log (título, detalhe, usuário)…">
+    <select id="log-filter-cat"><option value="">Categoria: todas</option></select>
+    <select id="log-filter-user"><option value="">Usuário: todos</option></select>
+    <label style="font-size:12px;color:var(--dim);display:flex;align-items:center;gap:4px;">De <input type="date" id="log-date-from"></label>
+    <label style="font-size:12px;color:var(--dim);display:flex;align-items:center;gap:4px;">Até <input type="date" id="log-date-to"></label>
+    <button class="btn-secondary" id="log-filter-reset" title="Limpar filtros">✖ Limpar filtros</button>
     <span class="log-count" id="log-count"></span>
     <span class="log-expiry" id="log-expiry"></span>
-    <button class="btn-secondary" id="log-export-btn" title="Exportar log como CSV">⬇ Exportar log</button>
+    <button class="btn-secondary" id="log-export-btn" title="Exportar o que está filtrado como CSV">⬇ Exportar log</button>
     <button class="btn-backup danger" id="log-clear-btn">🗑 Limpar log</button>
   </div>
   <div class="log-card">
@@ -2946,13 +2948,15 @@
         <tr>
           <th id="th-unidade-log" style="width:110px;display:none;">Local</th>
           <th style="width:150px;">Data/Hora</th>
-          <th style="width:110px;">Categoria</th>
+          <th style="width:140px;">Usuário</th>
+          <th style="width:130px;">Categoria</th>
           <th>Detalhe</th>
         </tr>
       </thead>
       <tbody id="log-tbody"></tbody>
     </table>
   </div>
+  <button class="btn-secondary log-more" id="log-more-btn" style="display:none;">Mostrar mais</button>
 </div>
 
 <!-- ═══════════════ ADMINISTRAÇÃO TAB ═══════════════ -->
@@ -3966,6 +3970,10 @@ const pcmListenersBase = {};
 // Abas que aparecem na página separada da Ouvidoria (ouvidoria.html). A ordem aqui não importa:
 // "Solicitações de Reparo" é sempre a primeira e a que abre. As permissões do perfil continuam valendo.
 const OUVIDORIA_ABAS = ['solicitacoes', 'painel-sr'];
+// Modo Ouvidoria restringe as abas — exceto para o Super Admin, que tem acesso a TUDO.
+function pcmOuvidoriaRestrita(){
+  return !!window.MODO_OUVIDORIA && !(pcmSession && pcmSession.role === 'super_admin');
+}
 
 // Lista de abas do sistema — usada para montar a matriz de permissões.
 // value = data-tab do botão da sidebar; label = nome amigável.
@@ -4029,9 +4037,14 @@ function pcmCarregarSessao(){
   }catch(e){ pcmSession = null; }
 }
 function pcmLogout(){
-  pcmSession = null;
-  try{ localStorage.removeItem(PCM_SESSION_KEY); }catch(e){}
-  firebase.auth().signOut().finally(() => location.reload());
+  try{ addLog('acesso', 'Logout', ''); }catch(e){}
+  try{ sessionStorage.removeItem('pcm_login_logado'); }catch(e){}
+  const flush = (typeof persistLogAgora === 'function') ? persistLogAgora() : Promise.resolve();
+  Promise.resolve(flush).catch(()=>{}).finally(() => {
+    pcmSession = null;
+    try{ localStorage.removeItem(PCM_SESSION_KEY); }catch(e){}
+    firebase.auth().signOut().finally(() => location.reload());
+  });
 }
 
 // Calcula as permissões efetivas de um usuário: perfil como base, com
@@ -4054,9 +4067,17 @@ function pcmCalcularPermissoes(usuario){
   return base;
 }
 
+// Log: além dos admins, quem tem permissão de Retorno (ou PCM) em Solicitações de Reparo pode VER a aba.
+// Exportar/limpar continuam dependendo das permissões do perfil.
+function pcmTemPermissaoRetorno(){
+  if(!pcmSession || !pcmSession.permissoesEfetivas) return false;
+  const p = pcmSession.permissoesEfetivas.solicitacoes;
+  return !!(p && (p.retorno || p.pcm));
+}
 function pcmPodeVerAba(abaId){
   if(!pcmSession) return false;
   if(pcmSession.role === 'super_admin' || pcmSession.role === 'admin_unidade') return true;
+  if(abaId === 'log' && pcmTemPermissaoRetorno()) return true;
   return !!(pcmSession.permissoesEfetivas && pcmSession.permissoesEfetivas[abaId] && pcmSession.permissoesEfetivas[abaId].ver);
 }
 function pcmPodeFazer(abaId, acaoId){
@@ -4081,7 +4102,7 @@ function pcmAplicarPermissoesNaUI(){
   document.querySelectorAll('.tab-btn[data-tab]').forEach(btn => {
     const aba = btn.getAttribute('data-tab');
     if(aba === 'admin') return; // aba de administração tratada à parte
-    if(window.MODO_OUVIDORIA && !OUVIDORIA_ABAS.includes(aba)){ btn.style.display = 'none'; return; }
+    if(pcmOuvidoriaRestrita() && !OUVIDORIA_ABAS.includes(aba)){ btn.style.display = 'none'; return; }
     btn.style.display = pcmPodeVerAba(aba) ? '' : 'none';
   });
   // Se a aba ativa não é mais permitida, muda para a primeira permitida.
@@ -4092,10 +4113,10 @@ function pcmAplicarPermissoesNaUI(){
   }
   // Botão/aba de Administração só aparece para admins.
   const adminBtn = document.getElementById('pcm-admin-tab-btn');
-  if(adminBtn) adminBtn.style.display = (pcmEhAdmin() && !window.MODO_OUVIDORIA) ? '' : 'none';
+  if(adminBtn) adminBtn.style.display = (pcmEhAdmin() && !pcmOuvidoriaRestrita()) ? '' : 'none';
   // Aba de Vínculo Empresa × Frota: mesma regra — só admins sabem que ela existe.
   const vinculoBtn = document.getElementById('pcm-vinculo-frota-tab-btn');
-  if(vinculoBtn) vinculoBtn.style.display = (pcmEhAdmin() && !window.MODO_OUVIDORIA) ? '' : 'none';
+  if(vinculoBtn) vinculoBtn.style.display = (pcmEhAdmin() && !pcmOuvidoriaRestrita()) ? '' : 'none';
   // Botões de ação (criar/editar/excluir/fechar/exportar) ficam ocultos via atributo data-pcm-acao.
   document.querySelectorAll('[data-pcm-acao]').forEach(el => {
     const [aba, acao] = el.getAttribute('data-pcm-acao').split(':');
@@ -4258,18 +4279,48 @@ async function pcmCarregarEmpresasDaUnidade(unidadeId){
     if(!list.length && PCM_EMPRESAS_SEED[unidadeId]){
       list = PCM_EMPRESAS_SEED[unidadeId].map(e => ({...e}));
       pcmEmpresasCache[unidadeId] = list;
+      pcmAuditarSemear('empresas:'+unidadeId, list);
       pcmDocEmpresas(unidadeId).set({ list, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
         .catch(e2 => console.warn('Firestore empresas seed:', unidadeId, e2));
       return list;
     }
     pcmEmpresasCache[unidadeId] = list;
+    pcmAuditarSemear('empresas:'+unidadeId, list);
     return list;
   }catch(e){
     console.error('PCM: falha ao carregar empresas da unidade', unidadeId, e);
     return [];
   }
 }
+
+// Auditoria de Administração: compara a lista que está sendo salva com a última versão
+// conhecida e registra criação / alteração / exclusão no log.
+const _pcmAuditSnap = {};
+function pcmAuditarSemear(chave, lista){
+  if(_pcmAuditSnap[chave]) return;
+  const m = {}; (lista || []).forEach(x => { if(x && x.id != null) m[x.id] = JSON.stringify(x); });
+  _pcmAuditSnap[chave] = m;
+}
+function pcmAuditarLista(chave, lista, rotulo, nomeFn){
+  try{
+    const atual = {};
+    (lista || []).forEach(x => { if(x && x.id != null) atual[x.id] = JSON.stringify(x); });
+    const ant = _pcmAuditSnap[chave];
+    _pcmAuditSnap[chave] = atual;
+    if(!ant) return; // primeira vez: só guarda a foto inicial
+    const porId = {}; (lista || []).forEach(x => { if(x && x.id != null) porId[x.id] = x; });
+    Object.keys(atual).forEach(id => {
+      if(!(id in ant))               addLog('admin', `${rotulo} criado(a): ${nomeFn(porId[id])}`, '');
+      else if(ant[id] !== atual[id]) addLog('admin', `${rotulo} alterado(a): ${nomeFn(porId[id])}`, '');
+    });
+    Object.keys(ant).forEach(id => {
+      if(!(id in atual)){ let n = id; try{ n = nomeFn(JSON.parse(ant[id])); }catch(e){} addLog('admin', `${rotulo} excluído(a): ${n}`, ''); }
+    });
+  }catch(e){ console.warn('auditoria', e); }
+}
+
 async function pcmSalvarEmpresas(unidadeId){
+  pcmAuditarLista('empresas:'+unidadeId, (pcmEmpresasCache[unidadeId] || []), 'Empresa', e => e.nome||e.id);
   if(!window._db){ alert('Sem conexão com o banco de dados. A alteração não foi salva — verifique sua internet e tente novamente.'); throw new Error('sem conexão'); }
   try{
     await pcmDocEmpresas(unidadeId).set({ list: pcmEmpresasCache[unidadeId] || [], updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
@@ -5246,7 +5297,7 @@ function renderAll(){
   renderCategoriasTab();
   renderDuplicatas();
   renderSugestoesBadge();
-  if(window.MODO_OUVIDORIA){
+  if(pcmOuvidoriaRestrita()){
     const ativaOuv = document.querySelector('.tab-btn.active[data-tab]');
     const tabOuv = ativaOuv ? ativaOuv.getAttribute('data-tab') : '';
     try{
@@ -7512,6 +7563,12 @@ document.getElementById('edit-drawer-submit').addEventListener('click', ()=>{
     reincidente_bool: isReinc,
   };
 
+  const _osAntes = editTarget.origin === 'manual'
+    ? (manualRecords.find(r => String(r._id) === String(editTarget.id)) || {})
+    : (editTarget.record || {});
+  const _osMudou = ['data','veiculo','os','operacao','descricao','tipo','setor','categoria','responsavel','observacoes','chave_erro']
+    .filter(k => String(_osAntes[k] == null ? '' : _osAntes[k]) !== String(updates[k] == null ? '' : updates[k]))
+    .map(k => `${k}: "${String(_osAntes[k] == null ? '' : _osAntes[k]).slice(0,40)}" → "${String(updates[k] == null ? '' : updates[k]).slice(0,40)}"`);
   if(editTarget.origin === 'manual'){
     const idx = manualRecords.findIndex(r => String(r._id) === String(editTarget.id));
     if(idx >= 0){
@@ -7531,7 +7588,7 @@ document.getElementById('edit-drawer-submit').addEventListener('click', ()=>{
 
   const paresStr = edPares.map(p => `${p.setor}${p.categoria?' › '+p.categoria:''}`).join(' | ');
   addLog('os-edit', `Edição OS: ${os} — Veículo ${veiculo}`,
-    `${tipo} · ${paresStr} · Origem: ${editTarget.origin}`);
+    `${tipo} · ${paresStr} · Origem: ${editTarget.origin}` + (_osMudou.length ? ` · Alterado: ${_osMudou.join('; ')}` : ''));
   closeEditDrawer();
   renderAll();
 });
@@ -8599,9 +8656,25 @@ loadHodoData();
 // SISTEMA DE LOG — captura tudo, expira em 7 dias
 // ════════════════════════════════════════════════════════
 const LOG_KEY          = 'pcm_log_v1';
-const LOG_EXPIRY_DAYS  = 7;
+const LOG_EXPIRY_DAYS  = 90;     // retenção
+const LOG_MAX_POR_UNIDADE = 2500; // o log de cada unidade vive em 1 documento Firestore (limite 1MB)
+const LOG_DETAIL_MAX   = 500;
 
-let logEntries = []; // { id, ts, cat, title, detail }
+// Categorias: chave → rótulo (a classe CSS .log-tag.<chave> dá a cor)
+const LOG_CATS = {
+  'acesso':'Acesso', 'admin':'Administração',
+  'os-nova':'Nova OS', 'os-edit':'Edição', 'os-delete':'Exclusão', 'os-fechamento':'Fechamento OS', 'os-merge':'Mescla OS',
+  'os-import':'Importação OS', 'sr-import':'Importação SR',
+  'frota':'Frota', 'frota-import':'Importação frota', 'vinculo-frota':'Vínculo frota',
+  'hodo':'Hodômetro', 'classificacao-massa':'Classificação em massa', 'recalculo':'Recálculo',
+  'backup':'Backup', 'sistema':'Sistema',
+};
+
+let logEntries = []; // { id, ts, cat, title, detail, user, userLogin, role }
+
+function logEsc(v){
+  return String(v == null ? '' : v).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+}
 
 function loadLog(){
   try{
@@ -8619,30 +8692,35 @@ function pruneLog(){
 }
 
 let _persistLogTimer = null;
-function persistLog(){
+function persistLogAgora(){
+  clearTimeout(_persistLogTimer);
+  _persistLogTimer = null;
+  if(!window._db) return Promise.resolve();
   // 'logEntries' é o array COMBINADO de todas as unidades ativas — cada entrada já
   // vem marcada com _unidadeId desde a criação (addLog). Separa por unidade antes de gravar.
+  const porUnidade = {};
+  logEntries.forEach(e => {
+    const uid = e._unidadeId || pcmUnidadePrincipal();
+    if(!porUnidade[uid]) porUnidade[uid] = [];
+    const { _unidadeId, _unidadeNome, ...limpo } = e;
+    porUnidade[uid].push(limpo);
+  });
+  return Promise.all(Object.entries(porUnidade).map(([uid, entradas]) => {
+    entradas = entradas.slice().sort((a,b) => new Date(b.ts) - new Date(a.ts)).slice(0, LOG_MAX_POR_UNIDADE);
+    pcmCacheBase.log[uid] = entradas;
+    return window._db.collection('pcm').doc(pcmDocIdParaUnidade('log', uid))
+      .set({ entries: entradas, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
+      .catch(e2 => console.warn('Firestore log', uid, ':', e2));
+  }));
+}
+function persistLog(){
   try{ localStorage.setItem(LOG_KEY, JSON.stringify(logEntries)); }catch(e){}
   if(!window._db) return;
   // Debounce: várias chamadas seguidas (ex.: fechamento em massa de OS)
   // resultam em UMA única escrita no Firestore por unidade, evitando estourar a fila
   // de writes pendentes (resource-exhausted).
   clearTimeout(_persistLogTimer);
-  _persistLogTimer = setTimeout(()=>{
-    const porUnidade = {};
-    logEntries.forEach(e => {
-      const uid = e._unidadeId || pcmUnidadePrincipal();
-      if(!porUnidade[uid]) porUnidade[uid] = [];
-      const { _unidadeId, _unidadeNome, ...limpo } = e;
-      porUnidade[uid].push(limpo);
-    });
-    Object.entries(porUnidade).forEach(([uid, entradas]) => {
-      pcmCacheBase.log[uid] = entradas;
-      window._db.collection('pcm').doc(pcmDocIdParaUnidade('log', uid))
-        .set({ entries: entradas, updatedAt: firebase.firestore.FieldValue.serverTimestamp() })
-        .catch(e2 => console.warn('Firestore log', uid, ':', e2));
-    });
-  }, 600);
+  _persistLogTimer = setTimeout(persistLogAgora, 600);
 }
 
 function addLog(cat, title, detail){
@@ -8650,8 +8728,11 @@ function addLog(cat, title, detail){
     id:     Date.now() + '_' + Math.random().toString(36).slice(2,6),
     ts:     new Date().toISOString(),
     cat,
-    title,
-    detail: detail || '',
+    title:  String(title || '').slice(0, 300),
+    detail: String(detail || '').slice(0, LOG_DETAIL_MAX),
+    user:      (typeof pcmSession !== 'undefined' && pcmSession && (pcmSession.nome || pcmSession.usuario)) || 'Sistema',
+    userLogin: (typeof pcmSession !== 'undefined' && pcmSession && pcmSession.usuario) || '',
+    role:      (typeof pcmSession !== 'undefined' && pcmSession && pcmSession.role) || '',
     _unidadeId: pcmUnidadePrincipal(),
     _unidadeNome: pcmNomeUnidade(pcmUnidadePrincipal()),
   };
@@ -8665,84 +8746,126 @@ function fmtTs(iso){
 }
 
 function catLabel(cat){
-  const map = {
-    'os-nova':   'Nova OS',
-    'os-edit':   'Edição OS',
-    'os-delete': 'Exclusão',
-    'os-import': 'Importação',
-    'sr-import': 'Importação SR',
-    'frota':     'Frota',
-    'hodo':      'Hodômetro',
-    'backup':    'Backup',
-    'sistema':   'Sistema',
-  };
-  return map[cat] || cat;
+  return LOG_CATS[cat] || cat;
 }
 
-function renderLogTab(){
-  pruneLog();
-  const q   = (document.getElementById('log-search').value||'').toLowerCase();
-  const cat = document.getElementById('log-filter-cat').value;
+let logPorPagina = 200;
+let logLimite = logPorPagina;
 
-  const filtered = logEntries.filter(e => {
+function logFiltrados(){
+  const q    = (document.getElementById('log-search').value||'').toLowerCase().trim();
+  const cat  = document.getElementById('log-filter-cat').value;
+  const usr  = document.getElementById('log-filter-user').value;
+  const de   = document.getElementById('log-date-from').value;
+  const ate  = document.getElementById('log-date-to').value;
+  const tDe  = de  ? new Date(de  + 'T00:00:00').getTime() : null;
+  const tAte = ate ? new Date(ate + 'T23:59:59.999').getTime() : null;
+  return logEntries.filter(e => {
     if(cat && e.cat !== cat) return false;
-    if(q && !(e.title+' '+e.detail).toLowerCase().includes(q)) return false;
+    if(usr && (e.userLogin || e.user || '') !== usr) return false;
+    const t = new Date(e.ts).getTime();
+    if(tDe  !== null && t < tDe)  return false;
+    if(tAte !== null && t > tAte) return false;
+    if(q && !((e.title||'')+' '+(e.detail||'')+' '+(e.user||'')+' '+(e.userLogin||'')).toLowerCase().includes(q)) return false;
     return true;
   });
+}
+
+// Mantém as opções de Categoria e Usuário em dia com o que existe no log
+function logMontarFiltros(){
+  const selCat = document.getElementById('log-filter-cat');
+  const selUsr = document.getElementById('log-filter-user');
+  const catAtual = selCat.value, usrAtual = selUsr.value;
+  const cats = new Set(Object.keys(LOG_CATS));
+  logEntries.forEach(e => e.cat && cats.add(e.cat));
+  selCat.innerHTML = '<option value="">Categoria: todas</option>' +
+    [...cats].map(c => `<option value="${logEsc(c)}">${logEsc(catLabel(c))}</option>`).join('');
+  selCat.value = cats.has(catAtual) ? catAtual : '';
+  const usuarios = new Map();
+  logEntries.forEach(e => { const k = e.userLogin || e.user; if(k && !usuarios.has(k)) usuarios.set(k, e.user || k); });
+  selUsr.innerHTML = '<option value="">Usuário: todos</option>' +
+    [...usuarios.entries()].sort((a,b) => a[1].localeCompare(b[1],'pt-BR'))
+      .map(([k,n]) => `<option value="${logEsc(k)}">${logEsc(n)}</option>`).join('');
+  selUsr.value = usuarios.has(usrAtual) ? usrAtual : '';
+}
+
+function renderLogTab(resetPagina){
+  pruneLog();
+  if(resetPagina === true) logLimite = logPorPagina;
+  logMontarFiltros();
+  const filtered = logFiltrados();
+  const visiveis = filtered.slice(0, logLimite);
 
   document.getElementById('log-count').textContent = `${filtered.length} de ${logEntries.length} evento(s)`;
 
-  // Expiry info
   if(logEntries.length){
     const oldest = new Date(logEntries[logEntries.length-1].ts);
     const expiry = new Date(oldest.getTime() + LOG_EXPIRY_DAYS * 86400 * 1000);
     document.getElementById('log-expiry').textContent =
       `Retenção: ${LOG_EXPIRY_DAYS} dias · próxima expiração: ${expiry.toLocaleDateString('pt-BR')}`;
+  } else {
+    document.getElementById('log-expiry').textContent = `Retenção: ${LOG_EXPIRY_DAYS} dias`;
   }
 
   const mostrarUnidadeLog = pcmUnidadesAtivas().length > 1;
   const thUnidadeLog = document.getElementById('th-unidade-log');
   if(thUnidadeLog) thUnidadeLog.style.display = mostrarUnidadeLog ? '' : 'none';
 
-  document.getElementById('log-tbody').innerHTML = filtered.length
-    ? filtered.map(e => `
+  document.getElementById('log-tbody').innerHTML = visiveis.length
+    ? visiveis.map(e => `
       <tr>
-        ${mostrarUnidadeLog ? `<td>${e._unidadeNome||'—'}</td>` : ''}
+        ${mostrarUnidadeLog ? `<td>${logEsc(e._unidadeNome||'—')}</td>` : ''}
         <td class="log-ts">${fmtTs(e.ts)}</td>
-        <td><span class="log-tag ${e.cat}">${catLabel(e.cat)}</span></td>
+        <td class="log-user">${logEsc(e.user||'—')}${e.userLogin && e.userLogin !== e.user ? `<small>${logEsc(e.userLogin)}</small>` : ''}</td>
+        <td><span class="log-tag ${logEsc(e.cat)}">${logEsc(catLabel(e.cat))}</span></td>
         <td class="log-detail">
-          <div>${e.title}</div>
-          ${e.detail ? `<div class="sub">${e.detail}</div>` : ''}
+          <div>${logEsc(e.title)}</div>
+          ${e.detail ? `<div class="sub">${logEsc(e.detail)}</div>` : ''}
         </td>
       </tr>`).join('')
-    : `<tr><td colspan="${mostrarUnidadeLog ? 4 : 3}" style="color:var(--dim);text-align:center;padding:24px;">Nenhum evento encontrado.</td></tr>`;
+    : `<tr><td colspan="${mostrarUnidadeLog ? 5 : 4}" style="color:var(--dim);text-align:center;padding:24px;">Nenhum evento encontrado.</td></tr>`;
+
+  const maisBtn = document.getElementById('log-more-btn');
+  if(maisBtn){
+    const restam = filtered.length - visiveis.length;
+    maisBtn.style.display = restam > 0 ? '' : 'none';
+    maisBtn.textContent = `Mostrar mais (${Math.min(restam, logPorPagina)} de ${restam} restantes)`;
+  }
 }
 
 // Log tab listeners
-document.getElementById('log-search').addEventListener('input', renderLogTab);
-document.getElementById('log-filter-cat').addEventListener('change', renderLogTab);
+['log-search'].forEach(id => document.getElementById(id).addEventListener('input', () => renderLogTab(true)));
+['log-filter-cat','log-filter-user','log-date-from','log-date-to'].forEach(id =>
+  document.getElementById(id).addEventListener('change', () => renderLogTab(true)));
+document.getElementById('log-filter-reset').addEventListener('click', () => {
+  ['log-search','log-filter-cat','log-filter-user','log-date-from','log-date-to'].forEach(id => document.getElementById(id).value = '');
+  renderLogTab(true);
+});
+document.getElementById('log-more-btn').addEventListener('click', () => { logLimite += logPorPagina; renderLogTab(); });
 document.getElementById('log-clear-btn').addEventListener('click', () => {
   if(pcmBloquear('log','excluir')) return;
   if(confirm('Apagar todo o histórico de log?')){
+    const qtd = logEntries.length;
     logEntries = [];
     persistLog();
-    renderLogTab();
-    addLog('sistema', 'Log limpo manualmente', '');
+    addLog('sistema', 'Log limpo manualmente', `${qtd} evento(s) apagados`);
+    renderLogTab(true);
   }
 });
 
 document.getElementById('log-export-btn').addEventListener('click', () => {
   if(pcmBloquear('log','exportar')) return;
-  const rows = [['Data/Hora','Categoria','Título','Detalhe']];
-  logEntries.forEach(e => rows.push([fmtTs(e.ts), catLabel(e.cat), e.title, e.detail]));
-  const csv  = rows.map(r => r.map(c => `"${String(c).replace(/"/g,'""')}"`).join(';')).join('\n');
-  const blob = new Blob(['\uFEFF'+csv], {type:'text/csv;charset=utf-8'});
+  const lista = logFiltrados();
+  const rows = [['Data/Hora','Local','Usuário','Login','Categoria','Título','Detalhe']];
+  lista.forEach(e => rows.push([fmtTs(e.ts), e._unidadeNome||'', e.user||'', e.userLogin||'', catLabel(e.cat), e.title, e.detail]));
+  const csv  = rows.map(r => r.map(c => `"${String(c == null ? '' : c).replace(/"/g,'""')}"`).join(';')).join('\n');
+  const blob = new Blob(['﻿'+csv], {type:'text/csv;charset=utf-8'});
   const a    = document.createElement('a');
   a.href     = URL.createObjectURL(blob);
   a.download = `pcm_log_${new Date().toISOString().slice(0,10)}.csv`;
   a.click();
   URL.revokeObjectURL(a.href);
-  addLog('backup', 'Log exportado como CSV', `${logEntries.length} evento(s)`);
+  addLog('backup', 'Log exportado como CSV', `${lista.length} evento(s)`);
 });
 
 loadLog();
@@ -9703,9 +9826,14 @@ document.getElementById('sol-submit-btn').addEventListener('click', () => {
   if(solEditId !== null){
     const idx = solRecords.findIndex(r => r.id === solEditId);
     if(idx >= 0){
+      const _srAntes = solRecords[idx];
+      const _srNovo = { num, data, veiculo, operacao, empresaId, descricao, motivo, situacao, funcionario, contato, observacao };
+      const _srMudou = Object.keys(_srNovo)
+        .filter(k => String(_srAntes[k] == null ? '' : _srAntes[k]) !== String(_srNovo[k] == null ? '' : _srNovo[k]))
+        .map(k => `${k}: "${String(_srAntes[k] == null ? '' : _srAntes[k]).slice(0,40)}" → "${String(_srNovo[k] == null ? '' : _srNovo[k]).slice(0,40)}"`);
       solRecords[idx] = { ...solRecords[idx], num, data, veiculo, operacao, empresaId, descricao, motivo, situacao, funcionario, contato, motoristaCracha, motoristaNome, observacao };
       srSalva = solRecords[idx];
-      addLog('os-edit', `Solicitação de reparo editada: ${num}`, `Veículo ${veiculo} · ${fmtDateBR(data)}`);
+      addLog('os-edit', `Solicitação de reparo editada: ${num}`, `Veículo ${veiculo} · ${fmtDateBR(data)}` + (_srMudou.length ? ` · Alterado: ${_srMudou.join('; ')}` : ''));
     }
   } else {
     const rec = { id:solNextId++, num, data, veiculo, operacao, empresaId, descricao, motivo, situacao, funcionario, contato, motoristaCracha, motoristaNome, situacaoRetorno:'Pendente', observacao, criadoPor: (pcmSession && (pcmSession.usuario || pcmSession.nome)) || '', createdAt:new Date().toISOString(), _unidadeId: pcmUnidadePrincipal(), _unidadeNome: pcmNomeUnidade(pcmUnidadePrincipal()) };
@@ -12779,6 +12907,7 @@ async function pcmCarregarDadosGlobais(){
 }
 
 async function pcmSalvarUsuarios(){
+  pcmAuditarLista('usuarios', pcmUsuarios, 'Usuário', u => (u.nome||u.usuario)+' ('+u.usuario+')');
   if(!window._db){ alert('Sem conexão com o banco de dados. A alteração não foi salva — verifique sua internet e tente novamente.'); throw new Error('sem conexão'); }
   try{
     await window._db.collection('pcm').doc('usuarios').set({ list: pcmUsuarios, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
@@ -12830,6 +12959,7 @@ async function pcmCriarContaAuthSemDeslogar(email, senha){
 }
 
 async function pcmSalvarPerfis(){
+  pcmAuditarLista('perfis', pcmPerfis, 'Perfil de acesso', p => p.nome||p.id);
   if(!window._db){ alert('Sem conexão com o banco de dados. A alteração não foi salva — verifique sua internet e tente novamente.'); throw new Error('sem conexão'); }
   try{
     await window._db.collection('pcm').doc('perfis').set({ list: pcmPerfis, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
@@ -12840,6 +12970,7 @@ async function pcmSalvarPerfis(){
   }
 }
 async function pcmSalvarUnidades(){
+  pcmAuditarLista('unidades', pcmUnidades, 'Unidade', u => u.nome||u.id);
   if(!window._db){ alert('Sem conexão com o banco de dados. A alteração não foi salva — verifique sua internet e tente novamente.'); throw new Error('sem conexão'); }
   try{
     await window._db.collection('pcm').doc('unidades').set({ list: pcmUnidades, updatedAt: firebase.firestore.FieldValue.serverTimestamp() });
@@ -12872,6 +13003,7 @@ async function pcmMostrarLogin(){
 async function pcmMostrarApp(){
   document.getElementById('pcm-login-screen').style.display = 'none';
   document.getElementById('pcm-app-shell-wrap').style.display = '';
+  pcmAuditarSemear('usuarios', pcmUsuarios); pcmAuditarSemear('perfis', pcmPerfis); pcmAuditarSemear('unidades', pcmUnidades);
   pcmAplicarPermissoesNaUI();
   pcmMontarAdminSeNecessario();
   pcmMontarSeletorUnidade();
@@ -13109,6 +13241,12 @@ async function pcmBoot(){
         };
         pcmSalvarSessao();
         pcmMostrarApp();
+        try{
+          if(!sessionStorage.getItem('pcm_login_logado')){
+            sessionStorage.setItem('pcm_login_logado','1');
+            addLog('acesso', `Login: ${pcmSession.nome}`, `Usuário ${pcmSession.usuario} · Local: ${pcmNomeUnidade(pcmSession.unidadeAtual)}`);
+          }
+        }catch(e){}
       } else {
         pcmSession = null;
         try{ localStorage.removeItem(PCM_SESSION_KEY); }catch(err){}
